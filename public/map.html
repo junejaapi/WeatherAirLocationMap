@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+    integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+    crossorigin=""></script>
+</head>
+
+<body>
+  <h1>Weather for different locations of the world</h1>
+  <div id="weathermap"></div>
+  <style>
+    #weathermap {
+      height: 400px;
+    }
+  </style>
+  <script>
+    let mymap = L.map('weathermap').setView([0, 0], 3);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+    }).addTo(mymap);
+  </script>
+  <script>
+    async function getData() {
+      const response = await fetch('data');
+      const data = await response.json();
+
+
+      for (item of data) {
+        console.log(item);
+        const marker = L.marker([item.lat, item.lon]).addTo(mymap);
+        const text =
+          `latitude: ${item.lat}<br>longitude: ${item.lon}<br>
+          condition: ${item.weather.currently.summary}
+          `
+        marker.bindPopup(text);
+
+      }
+
+    }
+    getData();
+  </script>
+</body>
+
+</html>
